@@ -1,0 +1,17 @@
+Changes
+examples/hello-cgi.html
+examples/hello.html
+examples/httpd.conf
+examples/jsonrpc.cgi
+lib/Apache2/JSONRPC.pm
+lib/CGI/JSONRPC.js
+lib/CGI/JSONRPC.pm
+lib/CGI/JSONRPC/Dispatcher.pm
+Makefile.PL
+MANIFEST
+README
+t/Apache2-JSONRPC.t
+t/CGI-JSONRPC.t
+t/conf/extra.last.conf.in
+t/TEST.PL
+META.yml                                 Module meta-data (added by MakeMaker)
