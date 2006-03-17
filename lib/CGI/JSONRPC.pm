@@ -9,7 +9,7 @@ use JSON::Syck qw(Dump Load);
 use CGI::JSONRPC::Dispatcher;
 use CGI;
 
-our $VERSION = "0.01";
+our $VERSION = "0.03";
 (our $JAVASCRIPT = __FILE__) =~ s{\.pm$}{.js};
 
 return 1;
@@ -139,6 +139,8 @@ CGI::JSONRPC - CGI handler for JSONRPC
 
 =head1 DESCRIPTION
 
+CGI::JSONRPC is a pole for perl.
+
 CGI::JSONRPC implements the JSONRPC protocol as defined at
 L<http://www.json-rpc.org/>. When a JSONRPC request is received by
 this handler, it is translated into a method call. The method and
@@ -206,7 +208,8 @@ L<Jemplate|Jemplate> package.
 
 =head1 LICENSE
 
-Copyright 2006 Tyler "Crackerjack" MacDonald <japh@crackerjack.net>
+Copyright 2006 Tyler "Crackerjack" MacDonald <japh@crackerjack.net> and
+David Labatte <buggyd@justanotherperlhacker.com>
 
 This is free software; You may distribute it under the same terms as perl
 itself.

@@ -1,4 +1,17 @@
-Revision history for Perl extension Apache2::JSONRPC.
+Revision history for Perl extension CGI::JSONRPC.
+
+0.03  Fri Mar 17 10:45:00 2006
+    - s/new_from_jsonrpc/jsonrpc_new/ so that it's consistent with other 
+      calls in this module [buggyd]
+    - modified bang line in example cgi to use env otherwise tests fail
+      when a user's own perl should be used [buggyd]
+    - made examples httpd.conf work without mod_perl [crakrjack]
+    - generate README from POD [crakrjack]
+
+0.02  Tue Mar 14 14:49:00 2006
+    - Renamed distro from Apache2::JSONRPC to CGI::JSONRPC
+      this shouldn't have gotten the same version number but it's out
+      now...
 
 0.02  Sun Mar 12 09:34:00 2006
     - Added GET handler that returns JSONRPC javascript to the client

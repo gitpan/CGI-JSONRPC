@@ -44,7 +44,7 @@ TODO:
     
     my $response = POST_BODY $path, content => JSON::Syck::Dump($request),
         'Content-Type' => 'text/json';
-    like($response, qr{\Q"error":"Can't locate\E.*new_from_jsonrpc}, "Can't call a method in a non-jsonrpc package");
+    like($response, qr{\Q"error":"Can't locate\E.*jsonrpc_new}, "Can't call a method in a non-jsonrpc package");
 }
 
 {

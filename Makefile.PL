@@ -32,3 +32,18 @@ WriteMakefile(
 sub clean_files {
     return [ 't/TEST' ];
 }
+
+sub MY::post_constants {
+    return qq{
+README: lib/CGI/JSONRPC.pm
+\tpod2text < lib/CGI/JSONRPC.pm > README.new && \$(MV) -vf README.new README
+
+distclean ::
+\t\$(RM) -vf README
+
+dynamic :: README
+
+static :: README
+    
+}
+}

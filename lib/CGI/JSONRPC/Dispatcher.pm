@@ -12,7 +12,7 @@ sub AUTOLOAD {
     my($class, $id, $to) = splice(@_, 0, 3);
     (my $method = $AUTOLOAD) =~ s{^.*::}{};
     $to =~ s{\.}{::}g;
-    my $object = $to->new_from_jsonrpc($id);
+    my $object = $to->jsonrpc_new($id);
     return $object->$method(@_);
 }
 
@@ -26,7 +26,7 @@ CGI::JSONRPC::Dispatcher - Dispatch JSONRPC requests to objects
 
 package Hello;
 
-sub new_from_json_rpc {
+sub jsonrpc_new {
     my($class, $id) = @_;
     my $self = bless { id => $id }, $class;
 }
@@ -58,9 +58,9 @@ to translate JavaScript class names into perl.
 
 =item *
 
-The C<new_from_json_rpc> method in the resulting class is called with
+The C<jsonrpc_new> method in the resulting class is called with
 $id passed in as the first argument. An object should be returned from
-C<new_from_json_rpc> in your code.
+C<jsonrpc_new> in your code.
 
 =item *
 
@@ -69,7 +69,7 @@ arguments to AUTOLOAD passed in.
 
 =back
 
-If new_from_json_rpc does not exist in the requested package, a fatal error
+If jsonrpc_new does not exist in the requested package, a fatal error
 will occur. This both provides you with a handy state mechanism, and ensures
 that packages that aren't supposed to be accessed from the web aren't.
 

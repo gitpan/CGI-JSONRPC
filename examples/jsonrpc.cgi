@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ exit;
 {
     package Hello;
         
-    sub new_from_jsonrpc {
+    sub jsonrpc_new {
         my($class, $id) = @_;
         return bless { id => $id }, $class;
     }
@@ -38,7 +38,7 @@ EOT
     use LWP::UserAgent;
     package LWP::UserAgent;
         
-    sub new_from_jsonrpc {
+    sub jsonrpc_new {
         my $class = shift;
         return $class->new(@_);
     }
