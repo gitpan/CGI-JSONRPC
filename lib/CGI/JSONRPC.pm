@@ -4,124 +4,49 @@ package CGI::JSONRPC;
 
 use strict;
 use warnings;
-use JSON::Syck;
-use JSON::Syck qw(Dump Load);
 use CGI::JSONRPC::Dispatcher;
+use CGI::JSONRPC::Base;
+use base qw(CGI::JSONRPC::Base);
 use CGI;
 
-our $VERSION = "0.03";
-(our $JAVASCRIPT = __FILE__) =~ s{\.pm$}{.js};
+our $VERSION = "0.04";
 
 return 1;
 
-sub new {
-    my($class, %args) = @_;
-    return bless { dispatcher => $class->default_dispatcher, %args }, $class;
+sub headers_js {
+  my $self = shift;
+  $self->{cgi}->header("text/javascript");
 }
 
-sub default_dispatcher {
-    'CGI::JSONRPC::Dispatcher'
+sub headers_json {
+  my $self = shift;
+  $self->{cgi}->header("text/json");
 }
 
 sub handler {
-    my($class, $cgi) = @_;
+    my($class, $cgi,@args) = @_;
     
     $cgi ||= CGI->new;
     my $self = $class->new(
         path        =>  $cgi->url(-absolute => 1, -full => 0, -path_info => 0),
-        path_info   =>  $cgi->path_info()
+        path_info   =>  $cgi->path_info(),
+        cgi         =>  $cgi,
+        @args
     );
     
     my $method = $cgi->request_method;
     
     if($method eq 'GET' || $method eq 'HEAD') {
-        print $cgi->header("text/javascript"), $self->return_javascript;
+        print $self->headers_js(), $self->return_javascript;
         return 1;
     } elsif($method eq 'POST') {
         my $json = $cgi->param('POSTDATA') or die "No POST data was sent!";
-        print $cgi->header("text/json"), $self->run_json_request($json);
+        print $self->headers_json(), $self->run_json_request($json);
         return 1;
     } else {
         die "Unsupported method: ", $cgi->method;
     }
 }
-
-sub run_json_request {
-    my($self, $json) = @_;
-    
-    my $data = (JSON::Syck::Load($json))[0];
-    
-    die "Did not get a hash from RPC request!"
-        unless(ref($data) && ref($data) eq 'HASH');
-    
-    unless($data->{method}) {
-        warn "JSONRPC payload did not have a method!";
-        return $self->return_error($data, "JSONRPC payload did not have a method!"); 
-    }
-
-    return $self->run_data_request($data);
-}
-
-sub run_data_request {
-    my($self, $data) = @_;
-    
-    $data->{params} ||= [];
-    
-    my @rv = eval {
-        my $method = "$self->{dispatcher}\::$data->{method}";
-        warn $method;
-        no strict 'refs';
-        return(&{$method}($self->{dispatcher}, $data->{id}, @{$data->{params}}));
-    };
-    
-    if(my $error = $@) {
-        warn $error;
-        return $self->return_error($data, $error);
-    }
-    
-    if(defined $data->{id}) {
-        return $self->return_result($data, \@rv);
-    } else {
-        return "";
-    }
-}
-
-sub return_result {
-    my($self, $data, $result) = @_;
-    return JSON::Syck::Dump({ id => $data->{id}, result => $result })
-}
-
-sub return_error {
-    my($self, $data, $error) = @_;
-    return JSON::Syck::Dump({
-        id      =>  (defined $data->{id} ? $data->{id} : undef),
-        error   =>  $error
-    });
-}
-
-sub return_javascript {
-    my $self = shift;
-    if(my $class = $self->{path_info}) {
-        $class =~ s{^/|/$}{};
-        $class =~ s{[\.\/]}{::}g;
-        $class ||= $self;
-        return $class->jsonrpc_javascript($self);
-    } else {
-        return $self->jsonrpc_javascript($self);
-    }
-}
-
-sub jsonrpc_javascript {
-    my $self = shift;
-    my $fh;
-    open($fh, '<', $JAVASCRIPT) or die $!;
-    my @rv = <$fh>;
-    if($self->{path}) {
-        push(@rv, "\nJSONRPC.URL = '$self->{path}';\n");
-    }
-    return join('', @rv);
-}
-    
 
 =pod
 
@@ -136,6 +61,7 @@ CGI::JSONRPC - CGI handler for JSONRPC
   my $cgi = new CGI;
   CGI::JSONRPC->handler($cgi);
   exit;
+  
 
 =head1 DESCRIPTION
 
@@ -183,8 +109,9 @@ value is defined.
 
 =item @params
 
-All further arguments to the method will be the arugments passed in
-the "params" section of the JSONRPC request.
+All further arguments to the method will be the arugments passed to the 
+JSONRPC constructor.  It is expected to be a hash of key value option
+pairs.
 
 =back
 
@@ -208,7 +135,7 @@ L<Jemplate|Jemplate> package.
 
 =head1 LICENSE
 
-Copyright 2006 Tyler "Crackerjack" MacDonald <japh@crackerjack.net> and
+Copyright 2008 Tyler "Crackerjack" MacDonald <japh@crackerjack.net> and
 David Labatte <buggyd@justanotherperlhacker.com>
 
 This is free software; You may distribute it under the same terms as perl

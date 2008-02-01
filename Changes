@@ -1,5 +1,13 @@
 Revision history for Perl extension CGI::JSONRPC.
 
+0.04 Fri Feb  1 10:45:00 PST 2008
+     - Fixed a bug on the javascript side; it wasn't using the right object
+       when it called back!
+0.03 Tue Mar 21 11:34:40 PST 2006
+     - Added Session dispatchers
+     - Added base classes for JSONRPC & Session to easy development of
+       handler objects
+     - Cleaned up some error handling
 0.03  Fri Mar 17 10:45:00 2006
     - s/new_from_jsonrpc/jsonrpc_new/ so that it's consistent with other 
       calls in this module [buggyd]

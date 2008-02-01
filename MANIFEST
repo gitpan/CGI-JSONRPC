@@ -13,5 +13,4 @@ t/Apache2-JSONRPC.t
 t/CGI-JSONRPC.t
 t/conf/extra.last.conf.in
 t/TEST.PL
-README
 META.yml                                 Module meta-data (added by MakeMaker)

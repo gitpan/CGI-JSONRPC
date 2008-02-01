@@ -7,6 +7,7 @@ use lib "$RealBin/../lib";
 use CGI::JSONRPC;
 
 CGI::JSONRPC->handler;
+
 exit;
 
 {

@@ -33,17 +33,15 @@ sub clean_files {
     return [ 't/TEST' ];
 }
 
-sub MY::post_constants {
+sub MY::postamble {
     return qq{
 README: lib/CGI/JSONRPC.pm
 \tpod2text < lib/CGI/JSONRPC.pm > README.new && \$(MV) -vf README.new README
 
+distmeta : README
+
 distclean ::
 \t\$(RM) -vf README
 
-dynamic :: README
-
-static :: README
-    
 }
 }

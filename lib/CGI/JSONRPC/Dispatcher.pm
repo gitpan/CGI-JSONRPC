@@ -11,6 +11,7 @@ return 1;
 sub AUTOLOAD {
     my($class, $id, $to) = splice(@_, 0, 3);
     (my $method = $AUTOLOAD) =~ s{^.*::}{};
+    die "Can't call a method without a package" unless $to;
     $to =~ s{\.}{::}g;
     my $object = $to->jsonrpc_new($id);
     return $object->$method(@_);
@@ -44,7 +45,7 @@ them into perl object method calls. Here's how it works:
 
 =over
 
-=item AUTOLOAD($my_class, $id, $desired_class, @args)
+=item AUTOLOAD($jsonrpc_object, $id, $desired_class, @args)
 
 When any function is called in Apache2::JSONRPC::Dispatcher, the
 C<AUTOLOAD> sub runs.

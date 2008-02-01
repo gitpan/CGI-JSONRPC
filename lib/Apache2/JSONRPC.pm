@@ -11,9 +11,9 @@ use Apache2::RequestIO ();
 use Apache2::Directive ();
 use Apache2::Log ();
 use Apache2::Module ();
-use CGI::JSONRPC;
+use CGI::JSONRPC::Base;
 
-use base qw(CGI::JSONRPC Apache2::Module);
+use base qw(CGI::JSONRPC::Base Apache2::Module);
 
 our $VERSION = "0.02";
 
@@ -57,12 +57,12 @@ sub apache2_config {
 
 sub handler {
     my($class, $r) = @_;
-    
     my $self = $class->new(
         path            =>  $r->uri(),
-        path_info       =>  $r->path_info()
+        path_info       =>  $r->path_info(),
+        request         =>  $r
     );
-    
+
     if($r->method_number == M_GET || $r->header_only) {
         $r->content_type("text/javascript");
         $r->print($self->return_javascript);
@@ -70,6 +70,7 @@ sub handler {
     } elsif($r->method_number == M_POST) {
         my $json = $self->apache2_read_post($r) or return HTTP_BAD_REQUEST;
         $r->content_type("text/json");
+        
         $r->print($self->run_json_request($json));
         return OK;
     } else {
@@ -112,6 +113,7 @@ sub apache2_read_post {
 =head1 NAME
 
 Apache2::JSONRPC - mod_perl handler for JSONRPC
+
 
 =head1 SYNOPSIS
 
