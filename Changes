@@ -1,5 +1,7 @@
 Revision history for Perl extension CGI::JSONRPC.
 
+0.05 Thu Feb  7 09:28:00 PST 2008
+     - Files were missing from MANIFEST... eeeeeek!
 0.04 Fri Feb  1 10:45:00 PST 2008
      - Fixed a bug on the javascript side; it wasn't using the right object
        when it called back!

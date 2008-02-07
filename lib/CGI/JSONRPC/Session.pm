@@ -1,71 +1,80 @@
-#!perl
+package CGI::JSONRPC::Session;
 
-package CGI::JSONRPC;
+use CGI::JSONRPC;
+use CGI::JSONRPC::Dispatcher::Session;
+use base qw(CGI::JSONRPC);
 
-use strict;
-use warnings;
-use CGI::JSONRPC::Dispatcher;
-use CGI::JSONRPC::Base;
-use base qw(CGI::JSONRPC::Base);
-use CGI;
 
-our $VERSION = "0.05";
+1;
 
-return 1;
+sub new {
+    my($class,%args) = @_;
+    %args = __PACKAGE__->init_session(%args);
+    return bless { dispatcher => $class->default_dispatcher, %args }, $class;
+}
+
+sub cgi_session_dsn {
+  my $class = shift;
+  return "driver:file;serializer:yaml";
+}
+
+# should set the args with a session arg
+sub init_session {
+   my ($class,%args) = @_;
+   if ($args{cgi} and ref($args{cgi})) {
+       require CGI::Session;
+       $args{session} = CGI::Session->new($class->cgi_session_dsn(), $args{cgi});  
+       $args{session}->flush();  # just in case :)
+   } else {
+     warn __PACKAGE__ . " unable to find a cgi argument, cannot restore session\n";
+   }
+   return %args;      
+}
+
 
 sub headers_js {
   my $self = shift;
-  $self->{cgi}->header("text/javascript");
+  $self->{session}->header('Content-Type' => "text/javascript");
 }
 
 sub headers_json {
   my $self = shift;
-  $self->{cgi}->header("text/json");
+  $self->{session}->header('Content-Type' => "text/json");
 }
 
-sub handler {
-    my($class, $cgi,@args) = @_;
-    
-    $cgi ||= CGI->new;
-    my $self = $class->new(
-        path        =>  $cgi->url(-absolute => 1, -full => 0, -path_info => 0),
-        path_info   =>  $cgi->path_info(),
-        cgi         =>  $cgi,
-        @args
-    );
-    
-    my $method = $cgi->request_method;
-    
-    if($method eq 'GET' || $method eq 'HEAD') {
-        print $self->headers_js(), $self->return_javascript;
-        return 1;
-    } elsif($method eq 'POST') {
-        my $json = $cgi->param('POSTDATA') or die "No POST data was sent!";
-        print $self->headers_json(), $self->run_json_request($json);
-        return 1;
-    } else {
-        die "Unsupported method: ", $cgi->method;
-    }
+
+sub default_dispatcher {
+    'CGI::JSONRPC::Dispatcher::Session'
 }
+
 
 =pod
 
 =head1 NAME
 
-CGI::JSONRPC - CGI handler for JSONRPC
+CGI::JSONRPC::Session - Persistant CGI handler for JSONRPC
 
 =head1 SYNOPSIS
 
+
   use CGI;
-  use CGI::JSONRPC;
+  use MyDispatcher
   my $cgi = new CGI;
-  CGI::JSONRPC->handler($cgi);
+  MyDispatcher->handler($cgi);
   exit;
   
+  package MyDispatcher;
+
+  sub init_session {
+    my ($class,%args) = @_;
+    require CGI::Session;
+    $args{session} = CGI::Session->new($args{cgi});
+    return %args;
+  }
+  
+  1;
 
 =head1 DESCRIPTION
-
-CGI::JSONRPC is a pole for perl.
 
 CGI::JSONRPC implements the JSONRPC protocol as defined at
 L<http://www.json-rpc.org/>. When a JSONRPC request is received by
@@ -135,8 +144,7 @@ L<Jemplate|Jemplate> package.
 
 =head1 LICENSE
 
-Copyright 2008 Tyler "Crackerjack" MacDonald <japh@crackerjack.net> and
-David Labatte <buggyd@justanotherperlhacker.com>
+Copyright 2006 Tyler "Crackerjack" MacDonald <japh@crackerjack.net>
 
 This is free software; You may distribute it under the same terms as perl
 itself.
@@ -147,3 +155,5 @@ The "examples" directory (examples/httpd.conf and examples/hello.html),
 L<JSON::Syck>, L<http://www.json-rpc.org/>.
 
 =cut
+
+
