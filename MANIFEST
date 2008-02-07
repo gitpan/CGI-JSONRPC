@@ -8,7 +8,6 @@ examples/jsonrpc-session.cgi
 examples/jsonrpc.cgi
 lib/Apache2/JSONRPC.pm
 lib/Apache2/JSONRPC/Session.pm
-lib/CGI/JSONRPC.js
 lib/CGI/JSONRPC.pm
 lib/CGI/JSONRPC/Base.js
 lib/CGI/JSONRPC/Base.pm
