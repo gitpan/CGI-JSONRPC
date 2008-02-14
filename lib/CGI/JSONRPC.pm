@@ -9,7 +9,7 @@ use CGI::JSONRPC::Base;
 use base qw(CGI::JSONRPC::Base);
 use CGI;
 
-our $VERSION = "0.07";
+our $VERSION = "0.08";
 
 return 1;
 

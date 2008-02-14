@@ -20,6 +20,8 @@ WriteMakefile(
         #'mod_perl2'     =>      2.000001,
         'JSON::Syck'    =>      0,
         'Apache::Test'  =>      0,
+        'Test::Warn'    =>      0,
+        'Test::Exception'   =>  0,
         'CGI'           =>      3.11,
     },
     clean             => { FILES => "@{ clean_files() }" },

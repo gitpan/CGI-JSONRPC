@@ -5,16 +5,31 @@ package CGI::JSONRPC::Dispatcher;
 use strict;
 use warnings;
 our $AUTOLOAD;
+use Attribute::Handlers;
+use attributes;
+
+our %Protected;
 
 return 1;
 
+sub UNIVERSAL::DontDispatch :ATTR(CODE) {
+  my($package, $symbol) = @_;
+  $CGI::JSONRPC::Dispatcher::Protected{$package}{*{$symbol}{NAME}}++;
+  return 1;
+}
+
 sub AUTOLOAD {
-    my($class, $id, $to) = splice(@_, 0, 3);
-    (my $method = $AUTOLOAD) =~ s{^.*::}{};
-    die "Can't call a method without a package" unless $to;
-    $to =~ s{\.}{::}g;
-    my $object = $to->jsonrpc_new($id);
-    return $object->$method(@_);
+  my($class, $id, $to) = splice(@_, 0, 3);
+  (my $method_name = $AUTOLOAD) =~ s{^.*::}{};
+  die "Can't call a $method_name without a class\n" unless $to;
+  $to =~ s{\.}{::}g;
+  die "$to\::$method_name may not be dispatched\n" if $Protected{$to}{$method_name};
+  my $object = $to->jsonrpc_new($id);
+  if(my $method = $object->can($method_name)) {
+    return $method->($object, @_);
+  } else {
+    die qq{Can't locate object method "$method_name" via package "$to"\n};
+  }
 }
 
 =pod
@@ -78,6 +93,28 @@ L<Apache2::JSONRPC> attempts to call dispatchers with this set of arguments,
 and then takes any return values, serializes them to JSON, and sends a response
 back to the client.
 
+=head1 PROTECTING METHODS
+
+If there are any methods in your RPC objects that shouldn't be called from
+the web, you can prevent the dispatcher from allowing them by adding the
+"DontDispatch" attribute, like so:
+
+  package Authenticator;
+
+  sub get_password : DontDispatch {
+    [... code the web shouldn't be able to run goes here...]
+  }
+
+Note that if you subclass your RPC classes (not always the best approach,
+but it happens sometimes...) you'll have to protect the method in all your
+subclasses as well (for now):
+
+  package Authenticator::Child;
+  sub get_password : DontDispatch {
+    my $self = shift;
+    $self->SUPER::get_password(@_);
+  }
+
 =head1 AUTHOR
 
 Tyler "Crackerjack" MacDonald <japh@crackerjack.net> and
@@ -85,7 +122,7 @@ David Labatte <buggyd@justanotherperlhacker.com>
 
 =head1 LICENSE
 
-Copyright 2006 Tyler "Crackerjack" MacDonald <japh@crackerjack.net>
+Copyright 2008 Tyler "Crackerjack" MacDonald <japh@crackerjack.net>
 
 This is free software; You may distribute it under the same terms as perl
 itself.
