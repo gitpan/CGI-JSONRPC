@@ -63,6 +63,9 @@ sub handler {
         request         =>  $r
     );
 
+    $self->{path_info} =~ s{^/|/$}{}g;
+    $self->{path_info} =~ s{//}{/}g;
+
     if($r->method_number == M_GET || $r->header_only) {
         $r->content_type("text/javascript");
         $r->print($self->return_javascript);

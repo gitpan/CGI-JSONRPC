@@ -1,5 +1,9 @@
 Revision history for Perl extension CGI::JSONRPC.
 
+0.09 Mon Feb 25 15:00:00 PST 2008
+     - Made the path <-> class translation a little bit more resilient
+     - Split up some code
+     - Got the unit tests working again.
 0.08 Thu Feb 14 10:55:00 PST 2008
      - Added a "DontDispatch" attribute that can be used to prevent
        methods from being called from the web.

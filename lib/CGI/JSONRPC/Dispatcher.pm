@@ -22,7 +22,7 @@ sub AUTOLOAD {
   my($class, $id, $to) = splice(@_, 0, 3);
   (my $method_name = $AUTOLOAD) =~ s{^.*::}{};
   die "Can't call a $method_name without a class\n" unless $to;
-  $to =~ s{\.}{::}g;
+  $to =~ s{[\./]}{::}g;
   die "$to\::$method_name may not be dispatched\n" if $Protected{$to}{$method_name};
   my $object = $to->jsonrpc_new($id);
   if(my $method = $object->can($method_name)) {

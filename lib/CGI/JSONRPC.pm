@@ -9,7 +9,7 @@ use CGI::JSONRPC::Base;
 use base qw(CGI::JSONRPC::Base);
 use CGI;
 
-our $VERSION = "0.08";
+our $VERSION = "0.09";
 
 return 1;
 
@@ -33,6 +33,9 @@ sub handler {
         cgi         =>  $cgi,
         @args
     );
+
+    $self->{path_info} =~ s{^/|/$}{}g;
+    $self->{path_info} =~ s{//}{/}g;
     
     my $method = $cgi->request_method;
     

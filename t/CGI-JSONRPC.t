@@ -7,7 +7,7 @@ use Apache::Test qw(:withtestmore);
 use Apache::TestRequest qw(POST POST_BODY);
 use JSON::Syck;
 
-plan tests => 6, have_cgi();
+plan tests => 6, need_cgi;
 
 my $config   = Apache::Test::config();
 my $hostport = Apache::TestRequest::hostport($config) || '';
