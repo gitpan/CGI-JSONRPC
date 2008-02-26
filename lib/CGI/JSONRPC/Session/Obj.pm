@@ -6,7 +6,7 @@ our @IGNORE_KEYS = qw( _session _cgi _request );
 1;
 
 sub jsonrpc_new {
-    my($class, $id, $session,%options) = @_;
+    my($class, $dispatcher, $id, $session,%options) = @_;
     warn __PACKAGE__ . " requires a valid session object.  Persistance will not be possible.";
     my $session_key = "jsonrpc_$id";
     if ($session and my $data = $session->param($session_key)) {
@@ -18,7 +18,7 @@ sub jsonrpc_new {
       return $self;
       #return bless $self, $class;
     } else {
-      return bless { id => $id,_session => $session, _session_key => $session_key, jsonrpc_ignore_keys => [@IGNORE_KEYS] }, $class;
+      return bless { id => $id,_session => $session, _session_key => $session_key, jsonrpc_ignore_keys => [@IGNORE_KEYS], dispatcher => $dispatcher }, $class;
     }
 }
 

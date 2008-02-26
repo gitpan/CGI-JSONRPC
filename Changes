@@ -1,5 +1,9 @@
 Revision history for Perl extension CGI::JSONRPC.
 
+0.10 Tue Frb 26 11:00:00 PST 2008
+     - Clean up a few more tests
+     - Tagged the ::Session stuff as unstable until buggyd has a chance
+       to look
 0.09 Mon Feb 25 15:00:00 PST 2008
      - Made the path <-> class translation a little bit more resilient
      - Split up some code

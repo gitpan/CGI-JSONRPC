@@ -4,8 +4,8 @@ use strict;
 1;
 
 sub jsonrpc_new {
-    my($class, $id) = @_;
-    return bless { id => $id }, $class;
+    my($class, $id, $dispatcher) = @_;
+    return bless { id => $id, dispatcher => $dispatcher }, $class;
 }
 
 sub jsonrpc_js_name {

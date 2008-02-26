@@ -74,6 +74,12 @@ CGI::JSONRPC::Session - Persistant CGI handler for JSONRPC
   
   1;
 
+
+=head1 NOTE
+
+The ::Session portions of CGI::JSONRPC are unmaintained and may change or
+disappear without notice (probably change...)
+
 =head1 DESCRIPTION
 
 CGI::JSONRPC implements the JSONRPC protocol as defined at

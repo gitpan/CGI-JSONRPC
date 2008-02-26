@@ -90,6 +90,11 @@ sub init_session {
 }
 
 
+=head1 NOTE
+
+The ::Session portions of CGI::JSONRPC are unmaintained and may change or
+disappear without notice (probably change...)
+
 =head1 DESCRIPTION
 
 Apache2::JSONRPC::Dispatcher receives JSONRPC class method calls and translates
