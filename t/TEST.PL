@@ -4,7 +4,22 @@ use strict;
 use warnings FATAL => 'all';
   
 use lib qw(lib);
-use base q(Apache::TestRunPerl);
+
+our @ISA;
+
+eval {
+  require mod_perl2;
+  import mod_perl2;
+};
+
+if($@) {
+  @ISA = qw(Apache::TestRun);
+} else {
+  @ISA = qw(Apache::TestRunPerl);
+}
+
+eval "use $ISA[0]; 1;" or die $@;
+
 use Apache::TestConfig ();
 
 my $self = main::->new->run(@ARGV);

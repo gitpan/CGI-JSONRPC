@@ -7,7 +7,11 @@ use Apache::Test qw(:withtestmore);
 use Apache::TestRequest qw(POST POST_BODY);
 use JSON::Syck;
 
-plan tests => 6;
+our $NUM_TESTS = 6;
+plan tests => $NUM_TESTS;
+
+SKIP: {
+  skip('need mod_perl2 to use Apache2::JSONRPC', $NUM_TESTS) unless have_module('mod_perl2');
 
 my $config   = Apache::Test::config();
 my $hostport = Apache::TestRequest::hostport($config) || '';
@@ -69,4 +73,6 @@ my $path = "/json-rpc";
     like($response, qr{"result":}, "Get a result: block back from a good method");
     my $data = (JSON::Syck::Load($response))[0];
     is_deeply($data, { id => 1, result => [ '127.0.0.1' ] }, "Get expected result from a good method");
+}
+
 }

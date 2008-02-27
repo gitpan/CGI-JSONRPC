@@ -25,7 +25,6 @@ t/CGI-JSONRPC-Dispatcher.t
 t/CGI-JSONRPC-Session.t
 t/CGI-JSONRPC.t
 t/conf/extra.last.conf.in
-t/TEST
 t/TEST.PL
 t/tlib/CGI/JSONRPC/Dispatcher/Test.pm
 META.yml                                 Module meta-data (added by MakeMaker)

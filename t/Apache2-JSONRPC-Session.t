@@ -23,8 +23,7 @@ TODO: {
     
 
 SKIP: { 
-    
-    skip('Need CGI::Session to run',$TEST_COUNT) unless have_module('CGI::Session');
+    skip('Need CGI::Session and mod_perl2 to run',$TEST_COUNT) unless have_module('CGI::Session') && have_module('mod_perl2');
 
     {
         my $response = POST $path, [], 'Content-Type' => 'text/json';
@@ -119,6 +118,3 @@ SKIP: {
 
 
 }
-
-
-

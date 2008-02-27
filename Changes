@@ -1,6 +1,8 @@
 Revision history for Perl extension CGI::JSONRPC.
 
-0.10 Tue Frb 26 11:00:00 PST 2008
+0.11 Wed Feb 27 10:40:00 PST 2008
+     - Only test against mod_perl if it is installed
+0.10 Tue Feb 26 11:00:00 PST 2008
      - Clean up a few more tests
      - Tagged the ::Session stuff as unstable until buggyd has a chance
        to look
